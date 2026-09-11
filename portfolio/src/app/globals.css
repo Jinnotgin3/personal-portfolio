@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+@theme {
+  /* Deep Cosmic Dark Mode */
+  --color-background: #030014;
+  --color-foreground: #f5f5f5;
+  --color-accent: #0000f2;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-purple: #a855f7;
+  --color-accent-ice: #e0f2fe;
+  --color-muted: #94a3b8;
+  --color-surface: rgba(11, 12, 22, 0.85);
+
+  /* Typography — General Sans for all readable text, Fraunces for wordmark serif */
+  --font-sans: "General Sans", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", monospace;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Ensure canvas elements are rendered properly */
+canvas {
+  display: block;
+}
+
+/* Smooth transitions for interactive elements */
+a,
+button {
+  transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #030014;
+}
+::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0000f2;
+}
+
+/* Text selection */
+::selection {
+  background-color: rgba(168, 85, 247, 0.3);
+  color: #e0f2fe;
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* Glassmorphic surface card */
+  .glass-card {
+    background: rgba(11, 12, 22, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Glassmorphic header */
+  .glass-header {
+    background: rgba(3, 0, 20, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* Cobalt accent glow */
+  .glow-cobalt {
+    text-shadow: 0 0 40px rgba(0, 0, 242, 0.5), 0 0 80px rgba(0, 0, 242, 0.2);
+  }
+
+  /* Cyan glow */
+  .glow-cyan {
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+  }
+
+  /* Monospace eyebrow tag */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent-cyan);
+  }
+
+  /* Gradient border */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 0, 242, 0.4), rgba(168, 85, 247, 0.4), rgba(34, 211, 238, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Shine text */
+  .text-shimmer {
+    background: linear-gradient(90deg, #e0f2fe 0%, #a855f7 40%, #22d3ee 60%, #e0f2fe 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+
+  /* Stitch Starfield Singularity Glow, Core & Vignette */
+  .singularity-glow {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 65vw;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at bottom center, rgba(168, 85, 247, 0.26) 0%, rgba(139, 92, 246, 0.12) 35%, rgba(91, 33, 182, 0.05) 65%, transparent 80%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .singularity-core {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(243, 232, 255, 0.50) 0%, rgba(216, 180, 254, 0.25) 40%, transparent 75%);
+    filter: blur(14px);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 100%, transparent 40%, rgba(3, 1, 6, 0.6) 80%, rgba(3, 1, 6, 0.95) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Stitch 3D Perspective Card Carousel Stage */
+  .scene-container {
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+  }
+
+  .grain-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.38;
+    mix-blend-mode: overlay;
+    background-size: 180px 180px;
+  }
+
+  .card-border-glow {
+    box-shadow: 
+      0 1px 1px 0 rgba(255, 255, 255, 0.15) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 25px 50px -12px rgba(0, 0, 0, 0.7),
+      0 15px 35px -5px rgba(2, 6, 23, 0.85);
+  }
+
+  .cards-ring {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .perspective-card {
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: box-shadow 0.3s ease;
+    will-change: transform, opacity;
+    flex-shrink: 0;
+    top: 50%;
+    left: 50%;
+    margin-top: -245px;
+    margin-left: -185px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    .cards-ring { height: 480px; }
+    .perspective-card {
+      margin-top: -225px;
+      margin-left: -165px;
+    }
+  }
+  @media (max-width: 768px) {
+    .cards-ring { height: 430px; }
+    .perspective-card {
+      margin-top: -200px;
+      margin-left: -145px;
+    }
+  }
+  @media (max-width: 640px) {
+    .cards-ring { height: 370px; }
+    .perspective-card {
+      margin-top: -170px;
+      margin-left: -120px;
+    }
+  }
+
+  .perspective-card:hover {
+    box-shadow: 
+      0 2px 2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+      0 35px 60px -15px rgba(0, 0, 0, 0.9),
+      0 0 45px 5px rgba(56, 116, 255, 0.25);
+  }
+
+  .cursor-grab {
+    cursor: grab;
+  }
+  .cursor-grabbing {
+    cursor: grabbing !important;
+  }
+  .cursor-grabbing * {
+    cursor: grabbing !important;
+  }
+
+  /* Stitch Card Textures */
+  .bg-crimson-texture {
+    background: 
+      radial-gradient(ellipse 95% 80% at 20% 15%, #ff2a2a 0%, #b80018 32%, #42040b 70%, #150204 100%),
+      linear-gradient(135deg, rgba(255, 80, 80, 0.4) 0%, transparent 60%);
+  }
+
+  .bg-violet-texture {
+    background: 
+      linear-gradient(135deg, #3700ff 0%, #761bf5 35%, #a832d4 58%, #f07ae8 90%),
+      radial-gradient(circle at 80% 20%, #ff80e5 0%, transparent 55%),
+      radial-gradient(circle at 20% 90%, #180054 0%, transparent 70%);
+    background-blend-mode: normal, screen, multiply;
+  }
+
+  .bg-cobalt-texture {
+    background: 
+      linear-gradient(115deg, #102a70 0%, #1a4cd2 28%, #578bff 48%, #1646c2 68%, #0a1f59 95%),
+      radial-gradient(ellipse at 40% 60%, rgba(94, 163, 255, 0.8) 0%, transparent 50%),
+      linear-gradient(220deg, rgba(2, 6, 23, 0.9) 0%, transparent 40%);
+  }
+
+  .bg-olive-texture {
+    background: 
+      radial-gradient(ellipse at 85% 15%, #c2df47 0%, #7e9c1f 35%, #3e500d 75%, #1c2604 100%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+  }
+
+  .bg-amber-texture {
+    background: 
+      radial-gradient(ellipse 90% 75% at 25% 20%, #ffd043 0%, #e67e17 40%, #5e2604 80%, #1c0a02 100%),
+      linear-gradient(145deg, rgba(255, 230, 150, 0.35) 0%, transparent 60%);
+  }
+
+  .bg-emerald-texture {
+    background: 
+      radial-gradient(ellipse 85% 75% at 75% 20%, #2bfac4 0%, #059669 35%, #064e3b 72%, #021a14 100%),
+      linear-gradient(130deg, rgba(167, 243, 208, 0.3) 0%, transparent 50%);
+  }
+
+  .olive-weave {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.12) 0px,
+      rgba(0, 0, 0, 0.12) 1.5px,
+      transparent 1.5px,
+      transparent 4px
+    );
+  }
+}
