@@ -223,9 +223,7 @@ Contributions, issues, and feature requests are welcome!
 
 ## 📧 Contact
 
-Jinendra Shah - [jinendra.shah@example.com](mailto:jinendra.shah@example.com)
-
-Portfolio: [https://jinendrashah.com](https://jinendrashah.com)
+Jinendra Shah - [jinendrashah333@gmail.com](mailto:jinendrashah333@gmail.com)
 
 ---
 
