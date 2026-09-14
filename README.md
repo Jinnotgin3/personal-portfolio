@@ -223,7 +223,11 @@ Contributions, issues, and feature requests are welcome!
 
 ## 📧 Contact
 
+<<<<<<< HEAD
 Jinendra Shah - [jinendrashah333@gmail.com](mailto:jinendrashah333@gmail.com)
+=======
+Jinendra Shah - [jinendrashah333@example.com](mailto:jinendrashah333@example.com)
+>>>>>>> 633a811 (Update README)
 
 ---
 
