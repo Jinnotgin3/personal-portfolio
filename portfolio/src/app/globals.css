@@ -15,6 +15,7 @@
   --font-sans: "General Sans", "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Fraunces", Georgia, serif;
   --font-mono: "JetBrains Mono", "Geist Mono", monospace;
+  --font-poppins: "Poppins", sans-serif;
 }
 
 body {
@@ -39,13 +40,16 @@ button {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #030014;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #a855f7;
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #0000f2;
 }
@@ -100,6 +104,7 @@ button {
   .gradient-border {
     position: relative;
   }
+
   .gradient-border::before {
     content: "";
     position: absolute;
@@ -186,7 +191,7 @@ button {
   }
 
   .card-border-glow {
-    box-shadow: 
+    box-shadow:
       0 1px 1px 0 rgba(255, 255, 255, 0.15) inset,
       0 0 0 1px rgba(255, 255, 255, 0.08) inset,
       0 25px 50px -12px rgba(0, 0, 0, 0.7),
@@ -217,21 +222,32 @@ button {
   }
 
   @media (max-width: 1024px) {
-    .cards-ring { height: 480px; }
+    .cards-ring {
+      height: 480px;
+    }
+
     .perspective-card {
       margin-top: -225px;
       margin-left: -165px;
     }
   }
+
   @media (max-width: 768px) {
-    .cards-ring { height: 430px; }
+    .cards-ring {
+      height: 430px;
+    }
+
     .perspective-card {
       margin-top: -200px;
       margin-left: -145px;
     }
   }
+
   @media (max-width: 640px) {
-    .cards-ring { height: 370px; }
+    .cards-ring {
+      height: 370px;
+    }
+
     .perspective-card {
       margin-top: -170px;
       margin-left: -120px;
@@ -239,7 +255,7 @@ button {
   }
 
   .perspective-card:hover {
-    box-shadow: 
+    box-shadow:
       0 2px 2px 0 rgba(255, 255, 255, 0.3) inset,
       0 0 0 1px rgba(255, 255, 255, 0.2) inset,
       0 35px 60px -15px rgba(0, 0, 0, 0.9),
@@ -249,22 +265,24 @@ button {
   .cursor-grab {
     cursor: grab;
   }
+
   .cursor-grabbing {
     cursor: grabbing !important;
   }
+
   .cursor-grabbing * {
     cursor: grabbing !important;
   }
 
   /* Stitch Card Textures */
   .bg-crimson-texture {
-    background: 
+    background:
       radial-gradient(ellipse 95% 80% at 20% 15%, #ff2a2a 0%, #b80018 32%, #42040b 70%, #150204 100%),
       linear-gradient(135deg, rgba(255, 80, 80, 0.4) 0%, transparent 60%);
   }
 
   .bg-violet-texture {
-    background: 
+    background:
       linear-gradient(135deg, #3700ff 0%, #761bf5 35%, #a832d4 58%, #f07ae8 90%),
       radial-gradient(circle at 80% 20%, #ff80e5 0%, transparent 55%),
       radial-gradient(circle at 20% 90%, #180054 0%, transparent 70%);
@@ -272,37 +290,35 @@ button {
   }
 
   .bg-cobalt-texture {
-    background: 
+    background:
       linear-gradient(115deg, #102a70 0%, #1a4cd2 28%, #578bff 48%, #1646c2 68%, #0a1f59 95%),
       radial-gradient(ellipse at 40% 60%, rgba(94, 163, 255, 0.8) 0%, transparent 50%),
       linear-gradient(220deg, rgba(2, 6, 23, 0.9) 0%, transparent 40%);
   }
 
   .bg-olive-texture {
-    background: 
+    background:
       radial-gradient(ellipse at 85% 15%, #c2df47 0%, #7e9c1f 35%, #3e500d 75%, #1c2604 100%),
       linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
   }
 
   .bg-amber-texture {
-    background: 
+    background:
       radial-gradient(ellipse 90% 75% at 25% 20%, #ffd043 0%, #e67e17 40%, #5e2604 80%, #1c0a02 100%),
       linear-gradient(145deg, rgba(255, 230, 150, 0.35) 0%, transparent 60%);
   }
 
   .bg-emerald-texture {
-    background: 
+    background:
       radial-gradient(ellipse 85% 75% at 75% 20%, #2bfac4 0%, #059669 35%, #064e3b 72%, #021a14 100%),
       linear-gradient(130deg, rgba(167, 243, 208, 0.3) 0%, transparent 50%);
   }
 
   .olive-weave {
-    background-image: repeating-linear-gradient(
-      45deg,
-      rgba(0, 0, 0, 0.12) 0px,
-      rgba(0, 0, 0, 0.12) 1.5px,
-      transparent 1.5px,
-      transparent 4px
-    );
+    background-image: repeating-linear-gradient(45deg,
+        rgba(0, 0, 0, 0.12) 0px,
+        rgba(0, 0, 0, 0.12) 1.5px,
+        transparent 1.5px,
+        transparent 4px);
   }
 }

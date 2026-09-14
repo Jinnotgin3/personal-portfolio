@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
+
 import { type Project } from "@/content/projects";
 
 // The 6 shader presets matching the Stitch 3D Perspective Card Showcase
@@ -104,13 +104,13 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
   const displayItems =
     projects && projects.length > 0
       ? projects.map((p, i) => ({
-          project: p,
-          texture: CARD_TEXTURES[i % CARD_TEXTURES.length],
-        }))
+        project: p,
+        texture: CARD_TEXTURES[i % CARD_TEXTURES.length],
+      }))
       : CARD_TEXTURES.map((t) => ({
-          project: undefined,
-          texture: t,
-        }));
+        project: undefined,
+        texture: t,
+      }));
 
   const N = displayItems.length;
   const angleStep = (2 * Math.PI) / N;
@@ -132,19 +132,24 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
       if (diff > N / 2) diff -= N;
       if (diff < -N / 2) diff += N;
       targetAngleRef.current = (currentNormalized + diff) * angleStep;
+      setActiveIndex(((targetIndex % N) + N) % N);
     },
     [angleStep, N]
   );
 
   const goToPrev = useCallback(() => {
     const nearest = Math.round(targetAngleRef.current / angleStep);
+    const prevIndex = ((nearest - 1) % N + N) % N;
     targetAngleRef.current = (nearest - 1) * angleStep;
-  }, [angleStep]);
+    setActiveIndex(prevIndex);
+  }, [angleStep, N]);
 
   const goToNext = useCallback(() => {
     const nearest = Math.round(targetAngleRef.current / angleStep);
+    const nextIndex = ((nearest + 1) % N + N) % N;
     targetAngleRef.current = (nearest + 1) * angleStep;
-  }, [angleStep]);
+    setActiveIndex(nextIndex);
+  }, [angleStep, N]);
 
   // Main 3D Scene Controller from Stitch
   useEffect(() => {
@@ -188,13 +193,17 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
       const tiltX = -(mouseYRatio * 6);
       const tiltY = mouseXRatio * 6;
 
+      // Determine which card is currently in front for pointer-event exclusivity
+      const nearestStep = Math.round(currentAngleRef.current / angleStep);
+      const frontIndex = ((nearestStep % N) + N) % N;
+
       cards.forEach((card, index) => {
         const cardAngle = index * angleStep;
 
         // Normalized modulo arithmetic: maps relative angular difference strictly into [-PI, PI]
         const diff =
           (((cardAngle - currentAngleRef.current) % (2 * Math.PI)) + 3 * Math.PI) %
-            (2 * Math.PI) -
+          (2 * Math.PI) -
           Math.PI;
 
         // 3D Circular coordinates
@@ -218,17 +227,21 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
         card.style.zIndex = `${zIndex}`;
         card.style.opacity = `${Math.max(0.04, opacity)}`;
 
+        // Front card: extra z-offset ensures it is physically above all siblings
+        const isFront = index === frontIndex;
+        const extraZ = isFront ? 30 : 0;
+
         if (card.matches(":hover") && !isDragging && cosFactor > 0.6) {
-          card.style.transform = `translate3d(${x}px, 0px, ${z + 30}px) rotateY(${
-            rotateY + tiltY
-          }deg) rotateX(${tiltX}deg) scale(${scale * 1.03})`;
+          card.style.transform = `translate3d(${x}px, 0px, ${z + extraZ + 30}px) rotateY(${rotateY + tiltY
+            }deg) rotateX(${tiltX}deg) scale(${scale * 1.03})`;
         } else {
-          card.style.transform = `translate3d(${x}px, 0px, ${z}px) rotateY(${
-            rotateY + tiltY
-          }deg) rotateX(${tiltX}deg) scale(${scale})`;
+          card.style.transform = `translate3d(${x}px, 0px, ${z + extraZ}px) rotateY(${rotateY + tiltY
+            }deg) rotateX(${tiltX}deg) scale(${scale})`;
         }
 
-        card.style.pointerEvents = cosFactor < 0.25 ? "none" : "auto";
+        // Only front card receives pointer events; non-front cards are inert
+        // (their React click-overlay handles "tap to select" interaction)
+        card.style.pointerEvents = isFront ? "auto" : "none";
       });
     }
 
@@ -237,6 +250,7 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
     function renderLoop() {
       const lerpFactor = isDragging ? 0.35 : 0.12;
       currentAngleRef.current += (targetAngleRef.current - currentAngleRef.current) * lerpFactor;
+      velocityAngleRef.current *= 0.88;
 
       update3DPositions();
 
@@ -268,6 +282,8 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
     // Pointer drag interaction
     const handlePointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
+      if ((e.target as HTMLElement).closest("a, button")) return;
+
       isDragging = true;
       startX = e.clientX;
       dragStartAngle = targetAngleRef.current;
@@ -307,7 +323,7 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
 
       try {
         if (e && e.pointerId) container.releasePointerCapture(e.pointerId);
-      } catch (_) {}
+      } catch (_) { }
 
       // Apply momentum release & snap to nearest card angle along the endless circle
       const projectedAngle = targetAngleRef.current + velocityAngleRef.current * 140;
@@ -326,25 +342,6 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
     container.addEventListener("pointercancel", handleDragEnd);
     container.addEventListener("mouseleave", handleMouseLeave);
 
-    // Direct click on card brings it into center front
-    const handleCardClicks = cards.map((card) => {
-      const onClick = (e: MouseEvent) => {
-        if ((e.target as HTMLElement).closest("a, button")) return;
-        if (Math.abs(velocityAngleRef.current) > 0.002) return;
-        const index = parseInt(card.getAttribute("data-index") || "0", 10);
-        if (!isNaN(index)) {
-          const currentNormalized = Math.round(targetAngleRef.current / angleStep);
-          const currentModulo = ((currentNormalized % N) + N) % N;
-          let diff = index - currentModulo;
-          if (diff > N / 2) diff -= N;
-          if (diff < -N / 2) diff += N;
-          targetAngleRef.current = (currentNormalized + diff) * angleStep;
-        }
-      };
-      card.addEventListener("click", onClick);
-      return { card, onClick };
-    });
-
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", updateDimensions);
@@ -355,7 +352,6 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
       container.removeEventListener("pointercancel", handleDragEnd);
       container.removeEventListener("mouseleave", handleMouseLeave);
       if (wheelSnapTimeout) clearTimeout(wheelSnapTimeout);
-      handleCardClicks.forEach(({ card, onClick }) => card.removeEventListener("click", onClick));
     };
   }, [angleStep, N]);
 
@@ -391,9 +387,8 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                 key={project?.slug || project?.title || index}
                 data-index={index}
                 data-purpose={texture.purpose}
-                className={`perspective-card group card-border-glow h-[340px] w-[240px] select-none overflow-hidden rounded-[32px] sm:h-[400px] sm:w-[290px] md:h-[450px] md:w-[330px] lg:h-[490px] lg:w-[370px] ${
-                  texture.ringClass || ""
-                }`}
+                className={`perspective-card group card-border-glow h-[340px] w-[240px] select-none overflow-hidden rounded-[32px] sm:h-[400px] sm:w-[290px] md:h-[450px] md:w-[330px] lg:h-[490px] lg:w-[370px] ${texture.ringClass || ""
+                  }`}
               >
                 {/* Gradient Fill */}
                 <div
@@ -414,6 +409,19 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                 {/* Specular Surface Shine / Light Beam */}
                 {texture.specular && <div className={texture.specular} />}
 
+                {/* Click-to-select overlay for non-active cards */}
+                {!isActive && (
+                  <div
+                    className="absolute inset-0 z-[60] cursor-pointer"
+                    style={{ pointerEvents: "auto" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToIndex(index);
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                  />
+                )}
+
                 {/* Top Category Tag if project exists */}
                 {project?.category && (
                   <div className="pointer-events-none absolute left-6 top-6">
@@ -427,10 +435,8 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                 <div className="pointer-events-none absolute bottom-6 left-6 right-6 flex flex-col gap-3">
                   <div className="flex items-end justify-between text-white/80 transition-colors duration-300 group-hover:text-white">
                     <div>
-                      <p
-                        className={`font-mono text-xs uppercase tracking-widest ${texture.monoColor}`}
-                      >
-                        {project ? `${project.category || "Project"} · ${texture.defaultShader}` : texture.defaultShader}
+                      <p className={`font-mono text-xs uppercase tracking-widest ${texture.monoColor}`}>
+                        {project?.category ? `${project.category} Project` : "Featured Project"}
                       </p>
                       <h3 className="mt-0.5 text-base font-medium tracking-tight sm:text-lg">
                         {project ? project.title : texture.defaultTitle}
@@ -460,17 +466,20 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                     </div>
                   )}
 
-                  {/* Action buttons (only interactive on active front card) */}
-                  {project && isActive && (
-                    <div className="pointer-events-auto flex flex-wrap gap-2 pt-1">
-                      {project.hasCaseStudy && project.slug && (
-                        <Link
-                          href={`/projects/${project.slug}`}
-                          className="rounded-full bg-blue-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-md shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-500"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                  {/* Action buttons (interactive on active front card) */}
+                  {project && (
+                    <div
+                      className={`flex flex-wrap gap-2 pt-1 transition-opacity duration-200 ${
+                        isActive ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+                      }`}
+                      style={{ touchAction: "auto" }}
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onTouchStart={(e) => e.stopPropagation()}
+                    >
+                      {project.hasCaseStudy && (
+                        <span className="rounded-full bg-blue-600/60 px-3.5 py-1.5 text-xs font-medium text-white/80 shadow-md shadow-blue-500/20 cursor-default select-none">
                           Case Study
-                        </Link>
+                        </span>
                       )}
                       {project.demo && (
                         <a
@@ -478,7 +487,9 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                           target="_blank"
                           rel="noopener noreferrer"
                           className="rounded-full border border-white/20 bg-white/15 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-white/25"
+                          style={{ touchAction: "auto" }}
                           onClick={(e) => e.stopPropagation()}
+                          onPointerDown={(e) => e.stopPropagation()}
                         >
                           Live Demo ↗
                         </a>
@@ -489,7 +500,9 @@ export function GradientCarousel({ projects, className = "" }: GradientCarouselP
                           target="_blank"
                           rel="noopener noreferrer"
                           className="rounded-full border border-white/10 bg-black/40 px-3.5 py-1.5 text-xs font-medium text-white/80 backdrop-blur-md transition-all hover:scale-105 hover:bg-black/60 hover:text-white"
+                          style={{ touchAction: "auto" }}
                           onClick={(e) => e.stopPropagation()}
+                          onPointerDown={(e) => e.stopPropagation()}
                         >
                           GitHub ↗
                         </a>

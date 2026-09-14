@@ -35,8 +35,9 @@ export function EditorialWordmark({
           </span>
           <span
             style={{
-              fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
-              fontSize: "0.68rem",
+              fontFamily: "var(--font-poppins, 'JetBrains Mono', monospace)",
+              fontSize: "0.75rem",
+              fontWeight: 500,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
               color: "#22d3ee",

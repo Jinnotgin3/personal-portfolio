@@ -1,8 +1,7 @@
 const MILESTONES = [
-  { year: "2024", title: "Started Bachelor's in Computer Science" },
-  { year: "2024", title: "Built first full-stack web application" },
-  { year: "2025", title: "Won college hackathon with ML project" },
-  { year: "2025", title: "Contributed to open-source projects" },
+  { year: "2024", title: "Started Bachelor's in Computer Science & Engineering (Data Science)" },
+  { year: "2025", title: "Built first full-stack web application" },
+  { year: "2026", title: "Contributed to open-source projects" },
   { year: "2026", title: "Developed MIRT Adaptive Testing System" },
   { year: "2026", title: "Looking for internship opportunities" },
 ];

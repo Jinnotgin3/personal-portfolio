@@ -6,7 +6,7 @@ export interface Project {
   category?: "Web" | "ML" | "Mobile";
   image: string;
   github?: string;
-  demo?: string;
+  demo?: string; // Optional: Add URL string when you have a live deployed demo
   hasCaseStudy: boolean;
 }
 
@@ -20,7 +20,7 @@ export const projects: Project[] = [
     category: "ML",
     image: "/projects/mirt-adaptive-testing.png",
     hasCaseStudy: true,
-    github: "https://github.com/jinendrashah/mirt-adaptive-testing",
+    github: "https://github.com/jinnotgin3",
   },
   {
     slug: "portfolio-website",
@@ -31,7 +31,7 @@ export const projects: Project[] = [
     category: "Web",
     image: "/projects/portfolio.png",
     hasCaseStudy: true,
-    demo: "https://jinendrashah.com",
+    github: "https://github.com/jinnotgin3",
   },
   {
     title: "E-Commerce Platform",
@@ -40,8 +40,7 @@ export const projects: Project[] = [
     tags: ["React", "Node.js", "MongoDB", "Stripe"],
     category: "Web",
     image: "/projects/ecommerce.png",
-    github: "https://github.com/jinendrashah/ecommerce-platform",
-    demo: "https://ecommerce-demo.vercel.app",
+    github: "https://github.com/jinnotgin3",
     hasCaseStudy: false,
   },
   {
@@ -51,7 +50,7 @@ export const projects: Project[] = [
     tags: ["Python", "TensorFlow", "Keras", "OpenCV"],
     category: "ML",
     image: "/projects/image-classification.png",
-    github: "https://github.com/jinendrashah/ml-image-classifier",
+    github: "https://github.com/jinnotgin3",
     hasCaseStudy: false,
   },
   {
@@ -61,8 +60,7 @@ export const projects: Project[] = [
     tags: ["React", "Firebase", "TypeScript", "Material-UI"],
     category: "Web",
     image: "/projects/task-manager.png",
-    github: "https://github.com/jinendrashah/task-manager",
-    demo: "https://task-manager-demo.vercel.app",
+    github: "https://github.com/jinnotgin3",
     hasCaseStudy: false,
   },
   {
@@ -72,8 +70,7 @@ export const projects: Project[] = [
     tags: ["React", "OpenWeather API", "Chart.js", "Tailwind"],
     category: "Web",
     image: "/projects/weather-dashboard.png",
-    github: "https://github.com/jinendrashah/weather-dashboard",
-    demo: "https://weather-demo.vercel.app",
+    github: "https://github.com/jinnotgin3",
     hasCaseStudy: false,
   },
 ];

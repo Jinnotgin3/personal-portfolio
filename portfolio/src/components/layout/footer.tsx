@@ -138,7 +138,7 @@ export function Footer() {
           fontFamily: "var(--font-mono)",
         }}
       >
-        © {new Date().getFullYear()} {site.name} — Built with Next.js
+        © {new Date().getFullYear()} {site.name}
       </p>
     </footer>
   );
